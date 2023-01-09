@@ -1,9 +1,9 @@
 import React from 'react'
 
-const ListItem = () => {
+const ListItem = ({note}) => {
   return (
     <div>
-      <h3>List Item</h3>
+      <h3>{note.body}</h3>
     </div>
   )
 }
