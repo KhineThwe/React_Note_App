@@ -17,11 +17,22 @@ const NotePage = ({history}) => {
   },[id])
 
   let getNote = async ()=>{
+    if(id === 'new' ) return
     let response = await fetch(`http://localhost:8000/notes/${id}`)
     let data = await response.json()
     console.log(data)
     setNote(data)
   }
+
+  let createNote =async () =>{
+    await fetch(`http://localhost:8000/notes/`,{
+      method : 'POST',
+      headers : {
+        'Content-Type' : 'application/json'
+      },
+      body: JSON.stringify({...note,'updated':new Date()})
+    })
+}
 
   let updateNote =async () =>{
       await fetch(`http://localhost:8000/notes/${id}`,{
@@ -46,8 +57,10 @@ const NotePage = ({history}) => {
   let handleSubmit = ()=>{
     if (id !== 'new' && !note.body){
       deleteNote()
-    }else if(id === 'new'){
+    }else if(id !== 'new'){
       updateNote()
+    }else if(id === 'new' && note!== null){
+      createNote()
     }
     history.push('/')
   }
@@ -59,7 +72,12 @@ const NotePage = ({history}) => {
                 <ArrowLeft onClick={handleSubmit}/>
               </Link>
            </h3>
-           <button onClick={deleteNote}>Delete</button>
+           {id !== 'new' ? (
+              <button onClick={deleteNote}>Delete</button>
+           ):(
+              <button onClick={handleSubmit}>Done</button>
+           )}
+          
         </div>
         <textarea  onChange={(e)=>{setNote({...note,'body':e.target.value})}} value={note?.body}>
 
